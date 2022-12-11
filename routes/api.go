@@ -1,23 +1,11 @@
-package start
+package routes
 
 import (
 	"expenses/controllers"
 	"expenses/middleware"
-	"os"
 
 	"github.com/labstack/echo/v4"
 )
-
-func RegisterRoutes() {
-	var Route *echo.Echo = echo.New()
-	RegisterWebRoutes(Route)
-	RegisterApiRoutes(Route)
-	Route.Start(":" + os.Getenv("APP_PORT"))
-}
-
-func RegisterWebRoutes(Route *echo.Echo) {
-	Route.GET("/health", controllers.Ping)
-}
 
 func RegisterApiRoutes(e *echo.Echo) {
 	Route := e.Group("/api")

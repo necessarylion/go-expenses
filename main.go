@@ -1,14 +1,36 @@
 package main
 
 import (
-	"expenses/start"
+	"expenses/app"
+	"expenses/routes"
+	"net/http"
+	"os"
+
+	"github.com/go-playground/validator"
+	"github.com/labstack/echo/v4"
 )
 
-func init() {
-	start.Env()
-	start.DatabaseConnection()
+func main() {
+	app.Env()
+	app.DatabaseConnection()
+	RegisterRoutes()
 }
 
-func main() {
-	start.RegisterRoutes()
+type CustomValidator struct {
+	validator *validator.Validate
+}
+
+func (cv *CustomValidator) Validate(i interface{}) error {
+	if err := cv.validator.Struct(i); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	return nil
+}
+
+func RegisterRoutes() {
+	var e *echo.Echo = echo.New()
+	e.Validator = &CustomValidator{validator: validator.New()}
+	routes.RegisterWebRoutes(e)
+	routes.RegisterApiRoutes(e)
+	e.Start(":" + os.Getenv("APP_PORT"))
 }

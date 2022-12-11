@@ -1,4 +1,4 @@
-package start
+package app
 
 import (
 	"fmt"
@@ -9,6 +9,10 @@ import (
 )
 
 var DB *gorm.DB
+
+func GetDb() *gorm.DB {
+	return DB
+}
 
 func DatabaseConnection() {
 	var err error
