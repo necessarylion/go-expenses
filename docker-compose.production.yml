@@ -4,7 +4,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: ./Dockerfile.Production
+      dockerfile: ./.docker/Dockerfile.Production
     volumes:
       - ./:/go/src/app
     ports:
