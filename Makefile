@@ -1,6 +1,9 @@
 include .env
 export
 
+run:
+	air
+
 migrate:
 	gorm-goose up
 
