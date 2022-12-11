@@ -1,0 +1,6 @@
+FROM golang:latest
+
+COPY . /go/src/app
+ADD ./.docker/bin/entrypoint.sh /usr/local/bin
+WORKDIR /go/src/app
+RUN go install github.com/Altoros/gorm-goose/cmd/gorm-goose@latest
