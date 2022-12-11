@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	gormgoose "github.com/Altoros/gorm-goose/lib/gorm-goose"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -30,4 +31,5 @@ func DatabaseConnection() {
 	} else {
 		panic("Failed to connect database")
 	}
+	gormgoose.GetMostRecentDBVersion("../db/migrations")
 }
