@@ -3,37 +3,31 @@ package controllers
 import (
 	"expenses/app"
 	"expenses/models"
+	request "expenses/requests"
 	"net/http"
-	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
 
 func GetRecords(c echo.Context) error {
+	reqMap := request.All(c)
 
-	// Parse the request body into a struct
-	type requestBody struct {
-		Limit int `json:"limit" validate:"required"`
-		Page  int `json:"page" validate:"required"`
-	}
-	limit, _ := strconv.Atoi(c.FormValue("limit"))
-	page, _ := strconv.Atoi(c.FormValue("page"))
+	var req request.ListingRequest
+	request.Bind(reqMap, &req)
 
-	u := requestBody{
-		Limit: limit,
-		Page:  page,
-	}
-
-	if err := c.Validate(u); err != nil {
+	if err := c.Validate(req); err != nil {
 		return err
 	}
+
+	limit := app.ToInt(req.Limit)
+	page := app.ToInt(req.Page)
 
 	var count int64
 	app.DB.Model(&models.User{}).Count(&count)
 
-	offset := (u.Page - 1) * u.Limit
+	offset := (page - 1) * limit
 	users := []models.User{}
-	result := app.DB.Limit(u.Limit).Offset(offset).Find(&users)
+	result := app.DB.Limit(limit).Offset(offset).Find(&users)
 
 	if result.Error != nil {
 		return c.String(http.StatusOK, "something wrong")
@@ -41,7 +35,7 @@ func GetRecords(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"total":        count,
-		"current_page": u.Page,
+		"current_page": page,
 		"data":         users,
 	})
 }

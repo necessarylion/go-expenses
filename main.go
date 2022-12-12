@@ -32,5 +32,5 @@ func RegisterRoutes() {
 	e.Validator = &CustomValidator{validator: validator.New()}
 	routes.RegisterWebRoutes(e)
 	routes.RegisterApiRoutes(e)
-	e.Start(":" + os.Getenv("APP_PORT"))
+	e.Logger.Fatal(e.Start(":" + os.Getenv("APP_PORT")))
 }
